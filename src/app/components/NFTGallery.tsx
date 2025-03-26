@@ -25,20 +25,20 @@ export default function NFTGallery() {
   }, [wallet.publicKey, connection]);
 
   return (
-    <div className="nftGalleryContainer">
-      <h2 className="nftGalleryTitle">Tus NFTs</h2>
+    <div className="nft-gallery">
+      <h2 className="nft-gallery__title">Tus NFTs</h2>
       {nfts.length === 0 ? (
-        <p>No se encontraron NFTs.</p>
+        <p className="nft-gallery__empty">No se encontraron NFTs.</p>
       ) : (
-        <div className="nftGalleryGrid">
+        <div className="nft-gallery__grid">
           {nfts.map((nft, index) => (
-            <div key={index} className="nftCard">
+            <div key={index} className="nft-gallery__card">
               <img
                 src={nft.json?.image || ""}
                 alt={nft.name}
-                className="nftImage"
+                className="nft-gallery__image"
               />
-              <h3 className="nftName">{nft.name}</h3>
+              <h3 className="nft-gallery__name">{nft.name}</h3>
             </div>
           ))}
         </div>

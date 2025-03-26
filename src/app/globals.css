@@ -1,4 +1,3 @@
-
 * {
   margin: 0;
   padding: 0;
@@ -6,140 +5,136 @@
 }
 
 body {
-  background-color: #111;
-  color: #fff;
-  font-family: sans-serif;
+  background-color: #0e0e0e;
+  color: #ffffff;
+  font-family: var(--font-orbitron), sans-serif;
   min-height: 100vh;
-}
-
-main {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  line-height: 1.5;
 }
 
 /* -----------------------------
-   SECCIÓN: NFT GALLERY
+   BLOCK: Dashboard
 ----------------------------- */
-.nftGalleryContainer {
-  background-color: #2c2c2c;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 1rem;
+.dashboard {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.nftGalleryTitle {
+.dashboard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard__title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  flex: 1;
+  color: #ffffff;
+}
+
+.dashboard__wallet {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dashboard__section {
+  margin-bottom: 2rem;
+}
+
+.dashboard__columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.dashboard__column {
+  flex: 1 1 500px;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+/* -----------------------------
+   BLOCK: NFT Gallery
+----------------------------- */
+.nft-gallery {
+  background-color: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  flex: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.nft-gallery__title {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+  color: #ffffff;
 }
 
-.nftGalleryGrid {
+.nft-gallery__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1rem;
   margin-top: 1rem;
+  width: 100%;
 }
 
-.nftCard {
-  background-color: #333;
-  border-radius: 6px;
+.nft-gallery__card {
+  background-color: #2a2a2a;
+  border-radius: 8px;
   text-align: center;
   padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
-.nftImage {
+.nft-gallery__image {
   width: 100%;
   height: 150px;
   object-fit: cover;
   border-radius: 4px;
 }
 
-.nftName {
+.nft-gallery__name {
   margin-top: 0.5rem;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: #f3f3f3;
 }
 
 /* -----------------------------
-   SECCIÓN: NOTIFICATION
+   BLOCK: Staking Interface
 ----------------------------- */
-.notificationContainer {
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #666;
-  border-radius: 6px;
-}
-
-.notificationInfo {
-  color: #ccc;
-}
-
-.notificationSuccess {
-  color: #22cc88;
-}
-
-.notificationError {
-  color: #ff2262;
-}
-
-/* -----------------------------
-   SECCIÓN: REWARDS DASHBOARD
------------------------------ */
-.rewardsContainer {
-  background-color: #2c2c2c;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 1rem;
-}
-
-.rewardsTitle {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.rewardsText {
-  margin: 0.25rem 0;
-}
-
-.rewardsClaimBtn {
-  margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #ff2262;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.historyTitle {
-  margin-top: 1rem;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-.historyItem {
-  margin: 0.25rem 0;
-}
-
-/* -----------------------------
-   SECCIÓN: STAKING INTERFACE
------------------------------ */
-/* Bloque principal */
 .staking {
-  background-color: #2c2c2c;
+  background-color: #1e1e1e;
   padding: 1.5rem;
   border-radius: 12px;
   color: #fff;
-  font-family: sans-serif;
-  max-width: 600px;     /* ⬅ Igual al ancho del panel superior */
-  width: 100%;          /* ⬅ Asegura que use el ancho disponible */
-  margin: 0 auto;
+  width: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  flex: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .staking__title {
   font-size: 1.2rem;
   margin-bottom: 1rem;
+  color: #ffffff;
 }
 
 .staking__image {
@@ -148,6 +143,58 @@ main {
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 1rem;
+}
+
+.staking__lock-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.staking__lock-option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #121212;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  gap: 1rem;
+  cursor: pointer;
+  min-height: 70px;
+  transition: all 0.2s ease-in-out;
+}
+
+.staking__lock-option:hover {
+  border-color: #444;
+  background-color: #1a1a1a;
+}
+
+.staking__lock-radio {
+  width: 18px;
+  height: 18px;
+  accent-color: #22cc88;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.staking__lock-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.staking__lock-label {
+  color: #facc15;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.staking__lock-status {
+  color: #aaa;
+  font-size: 0.85rem;
 }
 
 .staking__confirm-btn {
@@ -160,79 +207,120 @@ main {
   font-weight: bold;
   text-transform: uppercase;
   transition: opacity 0.2s ease;
-  width: 100%;         /* ⬅ Botón de ancho completo */
-  margin-top: 1rem;
+  width: 100%;
+  margin-top: auto;
 }
 
 .staking__confirm-btn:hover {
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
-/* Bloque de opciones de lock */
-.lock-options {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.lock-options__option {
-  display: flex;
-  align-items: center;
-  background-color: #1f1f1f;
-  padding: 0.75rem 1rem;
+/* -----------------------------
+   BLOCK: Rewards Dashboard
+----------------------------- */
+.rewards {
+  background-color: #2c2c2c;
+  padding: 1rem;
   border-radius: 8px;
-  border: 1px solid #444;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.rewards__title {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.rewards__text {
+  margin: 0.25rem 0;
+  color: #ccc;
+}
+
+.rewards__claim-btn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #ff2262;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
-  transition: border 0.2s ease-in-out;
-}
-
-.lock-options__option:hover {
-  border-color: #888;
-}
-
-.lock-options__radio {
-  margin-right: 1rem;
-  accent-color: #22cc88;
-  transform: scale(1.2);
-}
-
-.lock-options__content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.lock-options__label {
-  color: #facc15;
   font-weight: bold;
 }
 
-.lock-options__status {
-  color: #ccc;
-  font-size: 0.85rem;
+.rewards__history-title {
+  margin-top: 1rem;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #ffffff;
 }
+
+.rewards__history-item {
+  margin: 0.25rem 0;
+  color: #ccc;
+}
+
 /* -----------------------------
-   SECCIÓN: WALLET CONNECTION
+   BLOCK: Notification
 ----------------------------- */
-.walletConnectionContainer {
+.notification {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #666;
+  border-radius: 6px;
+}
+
+.notification--info {
+  color: #ccc;
+}
+
+.notification--success {
+  color: #22cc88;
+}
+
+.notification--error {
+  color: #ff2262;
+}
+
+/* -----------------------------
+   BLOCK: Wallet Connection
+----------------------------- */
+.wallet {
   margin-bottom: 1rem;
 }
 
-.custom-wallet-button {
-  background-color: #ff2262 !important;
+.wallet__button {
+  background-color: #8b5cf6 !important;
   color: #fff !important;
   border: none !important;
-  border-radius: 4px !important;
+  border-radius: 6px !important;
   padding: 0.5rem 1rem !important;
   cursor: pointer !important;
   text-transform: uppercase !important;
+  font-weight: bold !important;
 }
 
 /* -----------------------------
-   OTROS AJUSTES
+   BLOCK: General Buttons
 ----------------------------- */
 button:hover {
   opacity: 0.9;
   transition: opacity 0.2s ease-in-out;
+}
+
+/* -----------------------------
+   BLOCK: Responsive
+----------------------------- */
+@media (max-width: 768px) {
+  .dashboard__columns {
+    flex-direction: column;
+  }
+
+  .staking__lock-option {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .staking__lock-radio {
+    margin-bottom: 0.5rem;
+  }
 }

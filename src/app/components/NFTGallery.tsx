@@ -1,15 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Connection, clusterApiUrl } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import { Metaplex, walletAdapterIdentity, Nft } from "@metaplex-foundation/js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import StakingInterface from "./StakingInterface";
+
 export default function NFTGallery() {
   const wallet = useWallet();
   const [nfts, setNfts] = useState<Nft[]>([]);
   const [loading, setLoading] = useState(false);
   const connection = new Connection("https://api.devnet.solana.com");
-
 
   useEffect(() => {
     const fetchNFTs = async () => {
@@ -19,6 +19,8 @@ export default function NFTGallery() {
       try {
         const metaplex = Metaplex.make(connection).use(walletAdapterIdentity(wallet));
         const all = await metaplex.nfts().findAllByOwner({ owner: wallet.publicKey });
+
+        // Filtrar y castear explícitamente a Nft[]
         const filtered = all.filter((item): item is Nft => item.model === "nft");
         setNfts(filtered);
       } catch (error) {
@@ -29,9 +31,9 @@ export default function NFTGallery() {
     };
 
     fetchNFTs();
-  }, [wallet.publicKey?.toBase58()]); // evitar recrear conexión
+  }, [wallet.publicKey?.toBase58()]);
 
-  if (!wallet.publicKey) {
+  if (!wallet.connected) {
     return <p>Conecta tu wallet para ver tus NFTs.</p>;
   }
 
@@ -51,10 +53,11 @@ export default function NFTGallery() {
             ) : (
               <div className="nft-image-placeholder">Imagen no disponible</div>
             )}
+
             <h3 className="nft-name">{nft.name}</h3>
             <p className="nft-collection">
-  Collection: {nft.collection?.address.toBase58() || "Desconocida"}
-</p>
+              Collection: {nft.collection?.address.toBase58() || "Desconocida"}
+            </p>
 
             <StakingInterface
               nft={{

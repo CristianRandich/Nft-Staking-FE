@@ -14,7 +14,7 @@ export default function NFTGallery() {
       if (!wallet.publicKey) return;
       const metaplex = Metaplex.make(connection).use(walletAdapterIdentity(wallet));
       try {
-        const allNFTs = await metaplex.nfts().findAllByOwner(wallet.publicKey).run();
+        const allNFTs = await metaplex.nfts().findAllByOwner({ owner: wallet.publicKey });
         const filteredNFTs = allNFTs.filter((item): item is Nft => item.model === "nft");
         setNfts(filteredNFTs);
       } catch (error) {

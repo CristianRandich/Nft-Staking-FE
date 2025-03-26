@@ -29,7 +29,7 @@ export default function StakingInterface({ nft, onStake }: StakingInterfaceProps
     <div className="staking">
       <h3 className="staking__title">Staking NFT: {nft.name}</h3>
 
-      <img src={nft.image} alt={nft.name} className="staking__image" />
+      
 
       <div className="staking__lock-options">
         {[

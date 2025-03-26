@@ -34,25 +34,30 @@ const AdminDashboard = () => {
         </div>
       </section>
 
-      <section className="admin-dashboard__section">
-        <h2 className="admin-dashboard__section-title">Cambiar Tasa de Recompensa</h2>
-        {/* TODO: Vincular input a estado y enviar transacción para actualizar tasa */}
-        <input type="number" className="admin-dashboard__input" placeholder="Nueva tasa de recompensa" />
-        <button className="admin-dashboard__button">Actualizar</button>
-      </section>
+      {/* 🔧 Se añadió este contenedor para agrupar las dos secciones lateralmente */}
+      <div className="admin-dashboard__section-wrapper">
+        <section className="admin-dashboard__section">
+          <h2 className="admin-dashboard__section-title">Cambiar Tasa de Recompensa</h2>
+          {/* TODO: Vincular input a estado y enviar transacción para actualizar tasa */}
+          <div className="admin-dashboard__input-group">
+            <input type="number" className="admin-dashboard__input" placeholder="Nueva tasa de recompensa" />
+            <button className="admin-dashboard__button">Actualizar</button>
+          </div>
+        </section>
 
-      <section className="admin-dashboard__section">
-        <h2 className="admin-dashboard__section-title">Snapshots de Usuarios</h2>
-        <p>Genera una instantánea de los usuarios que tienen NFTs en staking.</p>
-        <div className="admin-dashboard__button-group">
-          {/* TODO: Implementar lógica para tomar snapshot desde la blockchain */}
-          <button className="admin-dashboard__button">Tomar Snapshot</button>
-          {/* TODO: Descargar snapshot en formato CSV */}
-          <button className="admin-dashboard__button admin-dashboard__button--outline">Descargar CSV</button>
-          {/* TODO: Descargar snapshot en formato JSON */}
-          <button className="admin-dashboard__button admin-dashboard__button--outline">Descargar JSON</button>
-        </div>
-      </section>
+        <section className="admin-dashboard__section">
+          <h2 className="admin-dashboard__section-title">Snapshots de Usuarios</h2>
+          <p>Genera una instantánea de los usuarios que tienen NFTs en staking.</p>
+          <div className="admin-dashboard__button-group">
+            {/* TODO: Implementar lógica para tomar snapshot desde la blockchain */}
+            <button className="admin-dashboard__button">Tomar Snapshot</button>
+            {/* TODO: Descargar snapshot en formato CSV */}
+            <button className="admin-dashboard__button admin-dashboard__button--outline">Descargar CSV</button>
+            {/* TODO: Descargar snapshot en formato JSON */}
+            <button className="admin-dashboard__button admin-dashboard__button--outline">Descargar JSON</button>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

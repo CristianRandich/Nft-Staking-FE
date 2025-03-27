@@ -1,0 +1,105 @@
+body {
+    background-color: #0d1117;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* BLOQUE: rewards */
+  .rewards {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+  
+  .rewards__title {
+    font-size: 2.5rem;
+    color: #00ff99;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .rewards__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* CARD */
+  .rewards__card {
+    background-color: #161b22;
+    border: 2px solid #00ff99;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .rewards__card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 10px #00ff9980;
+  }
+  
+  .rewards__card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .rewards__card-title {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #00ff99;
+  }
+  
+  .rewards__token-type {
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+  
+  .rewards__card-details {
+    margin-top: 1rem;
+  }
+  
+  .rewards__card-line {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+  }
+  
+  /* STATUS */
+  .rewards__status {
+    font-weight: bold;
+  }
+  
+  .rewards__status--available {
+    color: #00ff99;
+  }
+  
+  .rewards__status--claimed {
+    color: #888;
+  }
+  
+  /* BOTÓN */
+  .rewards__claim-btn {
+    margin-top: 1.2rem;
+    width: 100%;
+    padding: 0.7rem;
+    background-color: #00ff99;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .rewards__claim-btn:hover:not(:disabled) {
+    background-color: #00cc77;
+  }
+  
+  .rewards__claim-btn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+  }
+  

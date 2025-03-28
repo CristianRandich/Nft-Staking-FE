@@ -124,3 +124,49 @@ body {
     color: #ffffff;
     font-family: monospace;
   }
+  /* === RESPONSIVE ADAPTATION FOR MOBILE DEVICES === */
+@media (max-width: 480px) {
+  .rewards__title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .rewards__wallet {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .rewards__wallet-label {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .rewards__card {
+    padding: 1rem;
+  }
+
+  .rewards__card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .rewards__card-title {
+    font-size: 1rem;
+  }
+
+  .rewards__token-type {
+    font-size: 0.8rem;
+  }
+
+  .rewards__card-line {
+    font-size: 0.9rem;
+  }
+
+  .rewards__claim-btn {
+    font-size: 0.95rem;
+    padding: 0.6rem;
+  }
+}
+  

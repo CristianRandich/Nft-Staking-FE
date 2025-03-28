@@ -1,7 +1,7 @@
-/* admin.css - diseño actualizado con dos columnas para secciones laterales */
+  /* admin.css - diseño actualizado con dos columnas para secciones laterales */
 :root {
   --bg-color: #0f0f1b;
-  --card-bg: #1a1a2e;
+  --card-bg: #1f1f2f;
   --primary-color: #04ff9f;
   --text-color: #ffffff;
   --muted-color: #aaaaaa;
@@ -30,7 +30,7 @@ body {
 
 .admin-dashboard__metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
 }
@@ -177,3 +177,88 @@ body {
   border-color: #03cc80;
   box-shadow: 0 0 6px #03cc8080;
 }
+/* === Responsive adjustments === */
+@media (max-width: 768px) {
+  .admin-dashboard__section {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
+  .admin-dashboard__section-wrapper {
+    flex-direction: column;
+  }
+
+  .admin-dashboard__button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .admin-dashboard__input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-dashboard__title {
+    font-size: 1.8rem;
+  }
+
+  .admin-dashboard__card-value {
+    font-size: 1.5rem;
+  }
+
+  .admin-dashboard__input {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.9rem;
+  }
+
+  .admin-dashboard__button {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+}/* === Animaciones globales consistentes === */
+@keyframes admin-dashboard__fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-dashboard__section,
+.admin-dashboard__section--royalty,
+.admin-dashboard__metrics,
+.admin-dashboard__card {
+  opacity: 0;
+  animation: admin-dashboard__fadeInUp 0.5s ease forwards;
+}
+
+/* Delay para secciones para entrada progresiva */
+.admin-dashboard__section-wrapper .admin-dashboard__section:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.admin-dashboard__section-wrapper .admin-dashboard__section:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.admin-dashboard__section--royalty {
+  animation-delay: 0.3s;
+}
+
+/* Transición uniforme y animación hover en botones */
+.admin-dashboard__button,
+.admin-dashboard__button--outline {
+  transition: all var(--transition);
+  transform: scale(1);
+}
+
+.admin-dashboard__button:hover,
+.admin-dashboard__button--outline:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(4, 255, 159, 0.5);
+}
+
+/* === Fin del CSS === */

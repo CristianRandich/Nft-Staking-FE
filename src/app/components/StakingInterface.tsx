@@ -1,11 +1,6 @@
 "use client";
-import React, { useState } from "react";
-
-export enum LockPeriod {
-  Unlocked = "Unlocked",
-  OneYear = "OneYear",
-  TwoYears = "TwoYears",
-}
+import React, { useEffect, useState } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 interface NFT {
   mint: string;
@@ -15,48 +10,77 @@ interface NFT {
 
 interface StakingInterfaceProps {
   nft: NFT;
-  onStake: (nft: NFT, lockPeriod: LockPeriod) => void;
+  onStake: (nft: NFT) => void;
 }
 
 export default function StakingInterface({ nft, onStake }: StakingInterfaceProps) {
-  const [selectedLock, setSelectedLock] = useState<LockPeriod>(LockPeriod.Unlocked);
+  const { publicKey } = useWallet();
+  const [loading, setLoading] = useState(false);
+  const [userNFT, setUserNFT] = useState<NFT | null>(null);
 
   const handleStake = () => {
-    onStake(nft, selectedLock);
+    console.log("Staking", userNFT);
+    if (userNFT) onStake(userNFT);
   };
 
+  const handleUnstake = () => {
+    console.log("Unstaking", userNFT);
+  };
+
+  useEffect(() => {
+    const fetchNFTs = async () => {
+      if (!publicKey) return;
+
+      setLoading(true);
+      try {
+        // Simulación: reemplaza con tu llamada real
+        await new Promise((res) => setTimeout(res, 1000));
+
+        const foundNFTs: NFT[] = [
+          {
+            mint: "mint123",
+            name: "Staking NFT #1",
+            image: "https://placekitten.com/300/300"
+          }
+        ];
+
+        setUserNFT(foundNFTs.length > 0 ? foundNFTs[0] : null);
+      } catch (err) {
+        console.error("Error buscando NFTs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNFTs();
+  }, [publicKey]);
+
   return (
-    <div className="staking">
-      <h3 className="staking__title">Staking NFT: {nft.name}</h3>
+    <div className="staking-page">
+      <div className="staking">
+        <h3 className="staking__title">
+          {!publicKey
+            ? "Conecta tu wallet para ver tus NFTs."
+            : loading
+            ? "Buscando NFTs..."
+            : !userNFT
+            ? "NFTs no encontrados."
+            : `Staking NFT: ${userNFT.name}`}
+        </h3>
 
-      
+        {userNFT?.image && (
+          <img src={userNFT.image} alt={userNFT.name} className="staking__image" />
+        )}
 
-      <div className="staking__lock-options">
-        {[
-          { value: LockPeriod.Unlocked, multiplier: "0.5X", label: "Unlocked" },
-          { value: LockPeriod.OneYear, multiplier: "5X", label: "Locked 1Y" },
-          { value: LockPeriod.TwoYears, multiplier: "15X", label: "Locked 2Y" },
-        ].map((option) => (
-          <label key={option.value} className="staking__lock-option">
-            <input
-              type="radio"
-              name="lock"
-              value={option.value}
-              checked={selectedLock === option.value}
-              onChange={() => setSelectedLock(option.value)}
-              className="staking__lock-radio"
-            />
-            <div className="staking__lock-content">
-              <span className="staking__lock-label">{option.multiplier}</span>
-              <span className="staking__lock-status">{option.label}</span>
-            </div>
-          </label>
-        ))}
+        <div className="staking__buttons">
+          <button className="staking__confirm-btn" onClick={handleStake}>
+            STAKE
+          </button>
+          <button className="staking__confirm-btn" onClick={handleUnstake}>
+            UNSTAKE
+          </button>
+        </div>
       </div>
-
-      <button className="staking__confirm-btn" onClick={handleStake}>
-        CONFIRMAR STAKING
-      </button>
     </div>
   );
 }

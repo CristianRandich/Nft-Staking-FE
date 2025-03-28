@@ -3,15 +3,15 @@
 import React from "react";
 import WalletConnection from "./components/WalletConnection";
 import NFTGallery from "./components/NFTGallery";
-import StakingInterface, { LockPeriod } from "./components/StakingInterface";
+import StakingInterface from "./components/StakingInterface";
 // import RewardsDashboard from "./components/RewardsDashboard";
 // import Notification from "./components/Notification";
 
 export default function HomePage() {
-  const handleStake = (nft: any, lockPeriod: LockPeriod) => {
-    console.log("Staking NFT:", nft, "con lockPeriod:", lockPeriod);
-    // Lógica de staking
+  const handleStake = (nft: any) => {
+    console.log("Staking NFT:", nft);
   };
+  
 
   const handleClaim = () => {
     console.log("Reclamando recompensas...");
@@ -24,38 +24,24 @@ export default function HomePage() {
   ];
 
   return (
-    <main className="dashboard">
-      {/* Header con título centrado y botón alineado a la derecha */}
-      <div className="dashboard__header">
-        <h1 className="dashboard__title">Mi DApp de Staking</h1>
-        <div className="dashboard__wallet">
+    <main className="staking-layout">
+      {/* Título centrado arriba */}
+      <div className="staking-title-container">
+        <h1 className="staking-title">NFT Staking Page</h1>
+      </div>
+
+      {/* Cuadro centrado */}
+      <div className="staking-card-container">
+        {/* Botón en esquina superior derecha del cuadro */}
+        <div className="staking-card__wallet">
           <WalletConnection />
         </div>
-      </div>
 
-      {/* Dos columnas: NFTs y Staking */}
-      <div className="dashboard__columns">
-        <section className="dashboard__column">
-          <NFTGallery />
-        </section>
-
-        <section className="dashboard__column">
-          <StakingInterface
-            nft={{ mint: "fakeMint", name: "Fake NFT", image: "" }}
-            onStake={handleStake}
-          />
-        </section>
-      </div>
-
-      {/* <section className="dashboard__section">
-        <RewardsDashboard
-          rewards={12.34}
-          onClaim={handleClaim}
-          history={fakeHistory}
+        <StakingInterface
+          nft={{ mint: "fakeMint", name: "Fake NFT", image: "" }}
+          onStake={handleStake}
         />
-      </section>
-
-      <Notification message="¡Bienvenido a la DApp!" type="info" /> */}
+      </div>
     </main>
   );
 }

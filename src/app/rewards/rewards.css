@@ -102,4 +102,25 @@ body {
     background-color: #555;
     cursor: not-allowed;
   }
+  .rewards__wallet {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #161b22;
+    border: 1px solid #00ff99;
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    box-shadow: 0 0 8px #00ff9952;
+  }
+  .rewards__wallet-label {
+    font-weight: bold;
+    color: #00ff99;
+    margin-right: 0.5rem;
+  }
   
+  .rewards__wallet-address {
+    color: #ffffff;
+    font-family: monospace;
+  }

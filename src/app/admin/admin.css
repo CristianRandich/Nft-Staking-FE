@@ -1,5 +1,4 @@
 /* admin.css - diseño actualizado con dos columnas para secciones laterales */
-
 :root {
   --bg-color: #0f0f1b;
   --card-bg: #1a1a2e;
@@ -26,6 +25,7 @@ body {
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 2rem;
+  color: var(--primary-color)
 }
 
 .admin-dashboard__metrics {
@@ -109,11 +109,12 @@ body {
 .admin-dashboard__input {
   padding: 0.75rem 1rem;
   border-radius: var(--border-radius);
-  border: none;
+  border: 1px solid var(--primary-color);
   font-size: 1rem;
   width: 100%;
-  background-color: #fff;
-  color: #000;
+  background-color: #0f0f1b;
+  color: var(--text-color);
+  transition: border var(--transition), box-shadow var(--transition);
 }
 
 .admin-dashboard__button {
@@ -146,4 +147,33 @@ body {
   gap: 1rem;
   flex-wrap: wrap;
   margin-top: 1rem;
+}
+.admin-dashboard__section--royalty {
+  margin-top: 3rem;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-dashboard__section--royalty .admin-dashboard__input-group {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.admin-dashboard__section--royalty .admin-dashboard__input {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.admin-dashboard__input::placeholder {
+  color: var(--muted-color);
+}
+
+.admin-dashboard__input:focus {
+  outline: none;
+  border-color: #03cc80;
+  box-shadow: 0 0 6px #03cc8080;
 }

@@ -1,10 +1,11 @@
-
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Orbitron } from "next/font/google";
 import "./globals.css";
 import WalletProviders from "./components/Walletprovider";
+
+// ✅ IMPORTAMOS EL CONTEXTO DE AUTENTICACIÓN
+import { AuthProvider } from "@/context/AuthContext"; // <-- Cambio añadido
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,9 +36,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} antialiased`}>
-        <WalletProviders>
-          {children}
-        </WalletProviders>
+        {/* ✅ Envolvemos todo en <AuthProvider> para habilitar el contexto de login */}
+        <AuthProvider> {/* <-- Cambio añadido */}
+          <WalletProviders>
+            {children}
+          </WalletProviders>
+        </AuthProvider> {/* <-- Cambio añadido */}
       </body>
     </html>
   );

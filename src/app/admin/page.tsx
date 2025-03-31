@@ -1,9 +1,25 @@
-import React from "react";
+'use client'; // ✅ Necesario para usar hooks en archivos dentro de app/
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation"; // ✅ Para redirigir
+import { useAuth } from "@/context/AuthContext"; // ✅ Importamos el contexto de autenticación
 import "./admin.css";
 
 const AdminDashboard = () => {
+  const { authenticated } = useAuth(); // ✅ Accedemos al estado de login
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authenticated) {
+      router.push("/login"); // ✅ Si no está autenticado, redirige al login
+    }
+  }, [authenticated, router]); // ✅ Dependencias para el efecto
+
+  if (!authenticated) {
+    return null; // ✅ Opcional: evita que el contenido se renderice mientras redirige
+  }
+
   return (
-    <div className="admin-dashboard"> 
+    <div className="admin-dashboard">
       <h1 className="admin-dashboard__title">Panel de Administración - NFT Staking</h1>
 
       <section className="admin-dashboard__metrics">

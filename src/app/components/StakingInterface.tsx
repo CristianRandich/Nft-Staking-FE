@@ -53,17 +53,22 @@ export default function StakingInterface({ nft, onStake }: StakingInterfaceProps
       if (!publicKey) return;
       setLoading(true);
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nfts/${publicKey.toBase58()}`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nfts/${publicKey.toBase58()}`
+        );
         const result = await res.json();
 
-        if (res.ok && result.success && result.data.nfts.length > 0) {
-          // Suponiendo que cada NFT tiene { id, name, image }:
-          const nftData = result.data.nfts[0]; // Solo uno para esta interfaz
-          setUserNFT({
-            mint: nftData.id || "", // o usa el campo correcto del backend
-            name: nftData.name || "Unnamed NFT",
-            image: nftData.image || "",
-          });
+        console.log("Respuesta backend NFTs:", result);
+
+        if (res.ok && result.success && Array.isArray(result.data) && result.data.length > 0)
+          {
+            const nftData = result.data[0];
+            setUserNFT({
+              mint: nftData.mint || nftData.id || "",
+              name: nftData.name || "Unnamed NFT",
+              image: nftData.image || "",
+            });
+            
         } else {
           setUserNFT(null);
         }

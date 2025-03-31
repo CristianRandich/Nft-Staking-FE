@@ -25,12 +25,16 @@ export default function NFTGallery() {
         );
 
         const data = await res.json();
+
+        console.log("Respuesta backend NFTs:", data);
+        
         if (res.ok && data.success) {
-          const nftList: NFT[] = data.data.nfts.map((nft: any) => ({
-            mint: nft.id,
-            name: nft.metadata?.name || "NFT sin nombre",
-            image: nft.metadata?.image || "",
+          const nftList: NFT[] = data.data.map((nft: any) => ({
+            mint: nft.mint || nft.id || "",
+            name: nft.name || "NFT sin nombre",
+            image: nft.image || "",
           }));
+          
           setNfts(nftList);
         } else {
           console.error("Error en la respuesta del servidor:", data.message);

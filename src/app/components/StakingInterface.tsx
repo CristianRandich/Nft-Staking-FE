@@ -17,9 +17,9 @@ export default function StakingInterface({ nft, onStake }: StakingInterfaceProps
   const { publicKey } = useWallet();
   const [loading, setLoading] = useState(false);
   const [userNFT, setUserNFT] = useState<NFT | null>(null);
+  const [initializing, setInitializing] = useState(false);
 
   const handleStake = () => {
-    console.log("Staking", userNFT);
     if (userNFT) onStake(userNFT);
   };
 
@@ -27,26 +27,49 @@ export default function StakingInterface({ nft, onStake }: StakingInterfaceProps
     console.log("Unstaking", userNFT);
   };
 
+  const handleInitialize = async () => {
+    try {
+      setInitializing(true);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/initialize-pool`, {
+        method: "POST",
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Contrato inicializado con éxito ✅");
+      } else {
+        alert("Error al inicializar contrato ❌");
+      }
+    } catch (err) {
+      console.error("Error en initialize:", err);
+      alert("Fallo al inicializar contrato ❌");
+    } finally {
+      setInitializing(false);
+    }
+  };
+
   useEffect(() => {
     const fetchNFTs = async () => {
       if (!publicKey) return;
-
       setLoading(true);
       try {
-        // Simulación: reemplaza con tu llamada real
-        await new Promise((res) => setTimeout(res, 1000));
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nfts/${publicKey.toBase58()}`);
+        const result = await res.json();
 
-        const foundNFTs: NFT[] = [
-          {
-            mint: "mint123",
-            name: "Staking NFT #1",
-            image: "https://placekitten.com/300/300"
-          }
-        ];
-
-        setUserNFT(foundNFTs.length > 0 ? foundNFTs[0] : null);
+        if (res.ok && result.success && result.data.nfts.length > 0) {
+          // Suponiendo que cada NFT tiene { id, name, image }:
+          const nftData = result.data.nfts[0]; // Solo uno para esta interfaz
+          setUserNFT({
+            mint: nftData.id || "", // o usa el campo correcto del backend
+            name: nftData.name || "Unnamed NFT",
+            image: nftData.image || "",
+          });
+        } else {
+          setUserNFT(null);
+        }
       } catch (err) {
-        console.error("Error buscando NFTs:", err);
+        console.error("Error buscando NFTs desde backend:", err);
+        setUserNFT(null);
       } finally {
         setLoading(false);
       }
@@ -73,12 +96,24 @@ export default function StakingInterface({ nft, onStake }: StakingInterfaceProps
         )}
 
         <div className="staking__buttons">
-          <button className="staking__confirm-btn" onClick={handleStake}>
-            STAKE
-          </button>
-          <button className="staking__confirm-btn" onClick={handleUnstake}>
-            UNSTAKE
-          </button>
+          {userNFT ? (
+            <>
+              <button className="staking__confirm-btn" onClick={handleStake}>
+                STAKE
+              </button>
+              <button className="staking__confirm-btn" onClick={handleUnstake}>
+                UNSTAKE
+              </button>
+            </>
+          ) : publicKey && !loading ? (
+            <button
+              className="staking__confirm-btn"
+              onClick={handleInitialize}
+              disabled={initializing}
+            >
+              {initializing ? "Inicializando..." : "Inicializar Contrato"}
+            </button>
+          ) : null}
         </div>
       </div>
     </div>

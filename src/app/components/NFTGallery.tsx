@@ -1,40 +1,52 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Connection } from "@solana/web3.js";
-import { Metaplex, walletAdapterIdentity, Nft } from "@metaplex-foundation/js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import StakingInterface from "./StakingInterface";
 
+interface NFT {
+  mint: string;
+  name: string;
+  image: string;
+}
+
 export default function NFTGallery() {
   const wallet = useWallet();
-  const [nfts, setNfts] = useState<Nft[]>([]);
+  const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(false);
-  const connection = new Connection("https://api.devnet.solana.com");
 
   useEffect(() => {
-    const fetchNFTs = async () => {
+    const fetchNFTsFromBackend = async () => {
       if (!wallet.publicKey) return;
 
       setLoading(true);
       try {
-        const metaplex = Metaplex.make(connection).use(walletAdapterIdentity(wallet));
-        const all = await metaplex.nfts().findAllByOwner({ owner: wallet.publicKey });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nfts/${wallet.publicKey.toBase58()}`
+        );
 
-        // Filtrar y castear explícitamente a Nft[]
-        const filtered = all.filter((item): item is Nft => item.model === "nft");
-        setNfts(filtered);
-      } catch (error) {
-        console.error("Error al obtener NFTs:", error);
+        const data = await res.json();
+        if (res.ok && data.success) {
+          const nftList: NFT[] = data.data.nfts.map((nft: any) => ({
+            mint: nft.id,
+            name: nft.metadata?.name || "NFT sin nombre",
+            image: nft.metadata?.image || "",
+          }));
+          setNfts(nftList);
+        } else {
+          console.error("Error en la respuesta del servidor:", data.message);
+        }
+      } catch (err) {
+        console.error("Error al obtener NFTs:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchNFTs();
+    fetchNFTsFromBackend();
   }, [wallet.publicKey?.toBase58()]);
 
   if (!wallet.connected) {
-    return <p>Conecta tu wallet para ver tus NFTs.</p>;
+    return <p className="nft-gallery__title">Conecta tu wallet para ver tus NFTs.</p>;
   }
 
   return (
@@ -44,29 +56,22 @@ export default function NFTGallery() {
       {loading ? (
         <p>Cargando NFTs...</p>
       ) : nfts.length === 0 ? (
-        <p>No se encontraron NFTs.</p>
+        // Mostrar botón de inicializar cuando no hay NFTs
+        <StakingInterface
+          nft={{ mint: "", name: "Fake NFT", image: "" }}
+          onStake={() => {}}
+        />
       ) : (
         nfts.map((nft) => (
-          <div className="nft-card" key={nft.mint.address.toBase58()}>
-            {nft.json?.image ? (
-              <img src={nft.json.image} alt={nft.name} className="nft-image" />
+          <div className="nft-card" key={nft.mint}>
+            {nft.image ? (
+              <img src={nft.image} alt={nft.name} className="nft-image" />
             ) : (
               <div className="nft-image-placeholder">Imagen no disponible</div>
             )}
 
             <h3 className="nft-name">{nft.name}</h3>
-            <p className="nft-collection">
-              Collection: {nft.collection?.address.toBase58() || "Desconocida"}
-            </p>
-
-            <StakingInterface
-              nft={{
-                mint: nft.mint.address.toBase58(),
-                name: nft.name,
-                image: nft.json?.image || "",
-              }}
-              onStake={() => {}}
-            />
+            <StakingInterface nft={nft} onStake={() => {}} />
           </div>
         ))
       )}

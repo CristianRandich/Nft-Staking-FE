@@ -107,7 +107,7 @@ export default function StakingInterface({ nft, onStake }: StakingInterfaceProps
             </>
           ) : publicKey && !loading ? (
             <button
-              className="staking__confirm-btn"
+              className="staking__confirm-btn staking__confirm-btn--top" // se agrego clase staking__confirm-btn--top  para visualizar el boton a un lado de el de wallet 
               onClick={handleInitialize}
               disabled={initializing}
             >

@@ -300,6 +300,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 2rem; /* Espacio para el botón de wallet */ 
 }
 
 /* Botón Wallet arriba a la derecha del cuadro */
@@ -333,10 +334,6 @@ body {
 .staking:hover {
   box-shadow: 0 8px 24px rgba(0, 255, 255, 0.1);
 }
-
-
-
-
 /* -----------------------------
    BLOCK: Rewards Dashboard
 ----------------------------- */
@@ -453,4 +450,13 @@ button:hover {
   .staking__lock-radio {
     margin-bottom: 0.5rem;
   }
+}
+.staking__confirm-btn--top {
+  position: absolute;
+  top: -4rem; /* 🔧 Ajusta este valor para que coincida visualmente con la altura del botón de wallet */
+  right: 10rem; /* o ajústalo más si hace falta */
+  z-index: 10;
+  width: auto;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
 }

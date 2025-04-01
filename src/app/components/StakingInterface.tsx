@@ -3,22 +3,25 @@ import React, { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Image from "next/image";
 
-interface NFT {
+interface RawNFT  {
   mint: string;
+  id?: string;
   name: string;
   image: string;
 }
 
 interface StakingInterfaceProps {
-  nft: NFT;
-  onStake: (nft: NFT) => void;
+  nft: RawNFT ;
+  onStake: (nft: RawNFT ) => void;
 }
 
 export default function StakingInterface({ nft }: StakingInterfaceProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _nft = nft;
   const { publicKey } = useWallet();
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(false);
-  const [userNFTs, setUserNFTs] = useState<NFT[]>([]);
+  const [userNFTs, setUserNFTs] = useState<RawNFT []>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const selectedNFT = userNFTs[currentIndex] || null;
@@ -98,7 +101,7 @@ export default function StakingInterface({ nft }: StakingInterfaceProps) {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nfts/${publicKey.toBase58()}`);
         const result = await res.json();
         if (res.ok && result.success && Array.isArray(result.data)) {
-          const mappedNFTs: NFT[] = result.data.map((nft: any) => ({
+          const mappedNFTs: RawNFT [] = result.data.map((nft: RawNFT) => ({
             mint: nft.mint || nft.id || "",
             name: nft.name || "Unnamed NFT",
             image: nft.image || "",

@@ -67,7 +67,7 @@ export default function NFTGallery() {
       {loading ? (
         <p>Cargando NFTs...</p>
       ) : nfts.length === 0 ? (
-        <StakingInterface nft={{ mint: "", name: "Fake NFT", image: "" }} onStake={() => {}} />
+       <StakingInterface nft={{ mint: "", name: "Fake NFT", image: "" }} onStake={() => {}} />
       ) : (
         nfts.map((nft) => (
           <div className="nft-card" key={nft.mint}>

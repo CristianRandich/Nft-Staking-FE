@@ -13,7 +13,8 @@ interface StakingInterfaceProps {
   onStake: (nft: NFT) => void;
 }
 
-export default function StakingInterface({ nft, onStake }: StakingInterfaceProps) {
+export default function StakingInterface({ nft}: StakingInterfaceProps) {
+
   const { publicKey } = useWallet();
   const [loading, setLoading] = useState(false);
   const [userNFT, setUserNFT] = useState<NFT | null>(null);
@@ -117,8 +118,9 @@ export default function StakingInterface({ nft, onStake }: StakingInterfaceProps
             image: nftData.image || "",
           });
         } else {
-          setUserNFT(null);
-        }
+          // Si no hay NFTs desde backend, usa el prop nft
+          setUserNFT(nft); 
+        }        
       } catch (err) {
         console.error("Error buscando NFTs desde backend:", err);
         setUserNFT(null);

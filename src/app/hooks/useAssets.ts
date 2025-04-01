@@ -32,8 +32,8 @@ export const useAssets = (walletAddress: string | null) => {
           throw new Error(`Error del servidor: ${response.statusText}`);
         }
 
-        const data = await response.json();
-        setNfts(data);
+        const data: NFT[] = await response.json();
+setNfts(data);
       } catch (error) {
         console.error("Error al obtener NFTs:", error);
       } finally {

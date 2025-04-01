@@ -1,7 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { NFT } from "@/types";
-
 interface AppState {
   nfts: NFT[];
   setNfts: (nfts: NFT[]) => void;
@@ -12,7 +11,7 @@ interface AppState {
 const AppContext = createContext<AppState | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [nfts, setNfts] = useState<any[]>([]);
+  const [nfts, setNfts] = useState<NFT[]>([]);
   const [rewards, setRewards] = useState<number>(0);
 
   return (

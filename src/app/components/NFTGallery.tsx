@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import StakingInterface from "./StakingInterface";
+import Image from "next/image"; // ✅ Usamos <Image /> de Next.js
 
 interface NFT {
   mint: string;
@@ -14,7 +15,6 @@ interface RawNFT {
   name?: string;
   image?: string;
 }
-
 
 export default function NFTGallery() {
   const wallet = useWallet();
@@ -32,17 +32,14 @@ export default function NFTGallery() {
         );
 
         const data = await res.json();
-
         console.log("Respuesta backend NFTs:", data);
-        
+
         if (res.ok && data.success) {
           const nftList: NFT[] = data.data.map((nft: RawNFT) => ({
             mint: nft.mint || nft.id || "",
             name: nft.name || "NFT sin nombre",
             image: nft.image || "",
           }));
-          
-          
           setNfts(nftList);
         } else {
           console.error("Error en la respuesta del servidor:", data.message);
@@ -68,20 +65,21 @@ export default function NFTGallery() {
       {loading ? (
         <p>Cargando NFTs...</p>
       ) : nfts.length === 0 ? (
-        // Mostrar botón de inicializar cuando no hay NFTs
-        <StakingInterface
-          nft={{ mint: "", name: "Fake NFT", image: "" }}
-          onStake={() => {}}
-        />
+        <StakingInterface nft={{ mint: "", name: "Fake NFT", image: "" }} onStake={() => {}} />
       ) : (
         nfts.map((nft) => (
           <div className="nft-card" key={nft.mint}>
             {nft.image ? (
-              <img src={nft.image} alt={nft.name} className="nft-image" />
+              <Image
+                src={nft.image}
+                alt={nft.name}
+                className="nft-image"
+                width={300}
+                height={300}
+              />
             ) : (
               <div className="nft-image-placeholder">Imagen no disponible</div>
             )}
-
             <h3 className="nft-name">{nft.name}</h3>
             <StakingInterface nft={nft} onStake={() => {}} />
           </div>

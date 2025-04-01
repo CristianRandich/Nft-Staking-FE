@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import Image from "next/image"; // Asegúrate de tener este import al inicio
+import Image from "next/image";
+
 interface NFT {
   mint: string;
   name: string;
@@ -13,29 +14,27 @@ interface StakingInterfaceProps {
   onStake: (nft: NFT) => void;
 }
 
-export default function StakingInterface({ nft}: StakingInterfaceProps) {
-
+export default function StakingInterface({ nft }: StakingInterfaceProps) {
   const { publicKey } = useWallet();
   const [loading, setLoading] = useState(false);
-  const [userNFT, setUserNFT] = useState<NFT | null>(null);
   const [initializing, setInitializing] = useState(false);
+  const [userNFTs, setUserNFTs] = useState<NFT[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const selectedNFT = userNFTs[currentIndex] || null;
 
   const handleStake = async () => {
-    if (!userNFT) return;
+    if (!selectedNFT) return;
+    setLoading(true);
     try {
-      setLoading(true);
-      const payload = { nftId: userNFT.mint, lockPeriod: 1 }; // Ajusta lockPeriod si es necesario
+      const payload = { nftId: selectedNFT.mint, lockPeriod: 1 };
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL1}/api/freeze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (res.ok) {
-        alert(`NFT staked successfully. Tx: ${data.transaction}`);
-      } else {
-        alert(`Error staking NFT: ${data.message || data.error}`);
-      }
+      alert(res.ok ? `NFT staked ✅\nTx: ${data.transaction}` : `Error: ${data.message || data.error}`);
     } catch (err) {
       console.error("Error staking NFT:", err);
       alert("Error staking NFT");
@@ -45,21 +44,17 @@ export default function StakingInterface({ nft}: StakingInterfaceProps) {
   };
 
   const handleUnstake = async () => {
-    if (!userNFT) return;
+    if (!selectedNFT) return;
+    setLoading(true);
     try {
-      setLoading(true);
-      const payload = { nftId: userNFT.mint };
+      const payload = { nftId: selectedNFT.mint };
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL1}/api/unfreeze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (res.ok) {
-        alert(`NFT unstaked successfully. Tx: ${data.transaction}`);
-      } else {
-        alert(`Error unstaking NFT: ${data.message || data.error}`);
-      }
+      alert(res.ok ? `NFT unstaked ✅\nTx: ${data.transaction}` : `Error: ${data.message || data.error}`);
     } catch (err) {
       console.error("Error unstaking NFT:", err);
       alert("Error unstaking NFT");
@@ -68,26 +63,17 @@ export default function StakingInterface({ nft}: StakingInterfaceProps) {
     }
   };
 
-
   const handleInitialize = async () => {
+    setInitializing(true);
     try {
-      setInitializing(true);
       const payload = { rewardPerSecond: 1 };
-  
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/initialize-pool`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-  
-      await res.json(); 
-      if (res.ok) {
-        alert("Contrato inicializado con éxito ✅");
-      } else {
-        alert("Error al inicializar contrato ❌");
-      }
+      await res.json();
+      alert(res.ok ? "Contrato inicializado con éxito ✅" : "Error al inicializar contrato ❌");
     } catch (err) {
       console.error("Error en initialize:", err);
       alert("Fallo al inicializar contrato ❌");
@@ -95,43 +81,43 @@ export default function StakingInterface({ nft}: StakingInterfaceProps) {
       setInitializing(false);
     }
   };
-  
-  
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % userNFTs.length);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + userNFTs.length) % userNFTs.length);
+  };
 
   useEffect(() => {
     const fetchNFTs = async () => {
       if (!publicKey) return;
       setLoading(true);
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nfts/${publicKey.toBase58()}`
-        );
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nfts/${publicKey.toBase58()}`);
         const result = await res.json();
-
-        console.log("Respuesta backend NFTs:", result);
-
-        if (res.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
-          const nftData = result.data[0];
-          setUserNFT({
-            mint: nftData.mint || nftData.id || "",
-            name: nftData.name || "Unnamed NFT",
-            image: nftData.image || "",
-          });
+        if (res.ok && result.success && Array.isArray(result.data)) {
+          const mappedNFTs: NFT[] = result.data.map((nft: any) => ({
+            mint: nft.mint || nft.id || "",
+            name: nft.name || "Unnamed NFT",
+            image: nft.image || "",
+          }));
+          setUserNFTs(mappedNFTs);
+          setCurrentIndex(0);
         } else {
-          // Si no hay NFTs desde backend, usa el prop nft
-          setUserNFT(nft); 
-        }        
+          setUserNFTs([]);
+        }
       } catch (err) {
         console.error("Error buscando NFTs desde backend:", err);
-        setUserNFT(null);
+        setUserNFTs([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchNFTs();
-  }, [publicKey, nft]); // ✅ incluir 'nft' como dependencia
-
+  }, [publicKey]);
 
   return (
     <div className="staking-page">
@@ -141,24 +127,34 @@ export default function StakingInterface({ nft}: StakingInterfaceProps) {
             ? "Conecta tu wallet para ver tus NFTs."
             : loading
             ? "Buscando NFTs..."
-            : !userNFT
+            : !selectedNFT
             ? "NFTs no encontrados."
-            : `Staking NFT: ${userNFT.name}`}
+            : `Staking NFT: ${selectedNFT.name}`}
         </h3>
 
-        {userNFT?.image && (
-  <Image
-    src={userNFT.image}
-    alt={userNFT.name}
-    className="staking__image"
-    width={300}
-    height={300}
-    unoptimized
-  />
-)}
+        <div className="staking__nft-carousel">
+          {userNFTs.length > 1 && (
+            <button onClick={handlePrev} className="staking__arrow-btn">◀</button>
+          )}
+
+          {selectedNFT?.image && (
+            <Image
+              src={selectedNFT.image}
+              alt={selectedNFT.name}
+              className="staking__image"
+              width={300}
+              height={300}
+              unoptimized
+            />
+          )}
+
+          {userNFTs.length > 1 && (
+            <button onClick={handleNext} className="staking__arrow-btn">▶</button>
+          )}
+        </div>
 
         <div className="staking__buttons">
-          {userNFT && (
+          {selectedNFT && (
             <>
               <button className="staking__confirm-btn" onClick={handleStake}>
                 STAKE

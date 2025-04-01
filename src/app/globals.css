@@ -63,6 +63,28 @@ body {
   flex-direction: column;
   height: auto;
 }
+/*flechas para cambiar nfts*/
+.staking__nft-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 1rem 0;
+}
+
+.staking__arrow-btn {
+  background: transparent;
+  color: white;
+  font-size: 2rem;
+  border: none;
+  cursor: pointer;
+  padding: 0 10px;
+  transition: color 0.2s ease;
+}
+
+.staking__arrow-btn:hover {
+  color: #00ff99;
+}
 
 /* -----------------------------
    BLOCK: NFT Gallery

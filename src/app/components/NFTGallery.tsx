@@ -8,6 +8,13 @@ interface NFT {
   name: string;
   image: string;
 }
+interface RawNFT {
+  mint?: string;
+  id?: string;
+  name?: string;
+  image?: string;
+}
+
 
 export default function NFTGallery() {
   const wallet = useWallet();
@@ -29,11 +36,12 @@ export default function NFTGallery() {
         console.log("Respuesta backend NFTs:", data);
         
         if (res.ok && data.success) {
-          const nftList: NFT[] = data.data.map((nft: any) => ({
+          const nftList: NFT[] = data.data.map((nft: RawNFT) => ({
             mint: nft.mint || nft.id || "",
             name: nft.name || "NFT sin nombre",
             image: nft.image || "",
           }));
+          
           
           setNfts(nftList);
         } else {

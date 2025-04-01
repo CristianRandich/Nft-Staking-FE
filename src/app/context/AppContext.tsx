@@ -1,9 +1,10 @@
 "use client";
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { NFT } from "@/types";
 
 interface AppState {
-  nfts: any[];
-  setNfts: (nfts: any[]) => void;
+  nfts: NFT[];
+  setNfts: (nfts: NFT[]) => void;
   rewards: number;
   setRewards: (r: number) => void;
 }

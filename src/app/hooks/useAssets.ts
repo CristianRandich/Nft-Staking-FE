@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { NFT } from "@/types";
 
 export const useAssets = (walletAddress: string | null) => {
-  const [nfts, setNfts] = useState<any[]>([]);
+  const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-
+ 
+  
   useEffect(() => {
     if (!walletAddress) return;
 

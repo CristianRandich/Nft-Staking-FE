@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-
+import Image from "next/image"; // Asegúrate de tener este import al inicio
 interface NFT {
   mint: string;
   name: string;
@@ -82,7 +82,7 @@ export default function StakingInterface({ nft}: StakingInterfaceProps) {
         body: JSON.stringify(payload),
       });
   
-      const data = await res.json();
+      await res.json(); 
       if (res.ok) {
         alert("Contrato inicializado con éxito ✅");
       } else {
@@ -130,7 +130,8 @@ export default function StakingInterface({ nft}: StakingInterfaceProps) {
     };
 
     fetchNFTs();
-  }, [publicKey]);
+  }, [publicKey, nft]); // ✅ incluir 'nft' como dependencia
+
 
   return (
     <div className="staking-page">
@@ -146,8 +147,15 @@ export default function StakingInterface({ nft}: StakingInterfaceProps) {
         </h3>
 
         {userNFT?.image && (
-          <img src={userNFT.image} alt={userNFT.name} className="staking__image" />
-        )}
+  <Image
+    src={userNFT.image}
+    alt={userNFT.name}
+    className="staking__image"
+    width={300}
+    height={300}
+    unoptimized
+  />
+)}
 
         <div className="staking__buttons">
           {userNFT && (

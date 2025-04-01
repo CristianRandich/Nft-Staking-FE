@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import StakingInterface from "./StakingInterface";
-import Image from "next/image"; // ✅ Usamos <Image /> de Next.js
+import Image from "next/image";
 
 interface NFT {
   mint: string;
@@ -51,8 +51,10 @@ export default function NFTGallery() {
       }
     };
 
-    fetchNFTsFromBackend();
-  }, [wallet.publicKey?.toBase58()]);
+    if (wallet.publicKey) {
+      fetchNFTsFromBackend();
+    }
+  }, [wallet.publicKey]); // ✅ Corrección de dependencia exacta
 
   if (!wallet.connected) {
     return <p className="nft-gallery__title">Conecta tu wallet para ver tus NFTs.</p>;

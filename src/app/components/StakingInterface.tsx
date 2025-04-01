@@ -3,34 +3,28 @@ import React, { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Image from "next/image";
 
-interface RawNFT  {
+interface NFT {
   mint: string;
-  id?: string;
   name: string;
   image: string;
 }
 
 interface StakingInterfaceProps {
-  nft: RawNFT ;
-  onStake: (nft: RawNFT ) => void;
+  nft: NFT;
+  onStake: (nft: NFT) => void;
 }
 
 export default function StakingInterface({ nft }: StakingInterfaceProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _nft = nft;
-  const { publicKey } = useWallet();
+  const { publicKey, connected } = useWallet();
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(false);
-  const [userNFTs, setUserNFTs] = useState<RawNFT []>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const selectedNFT = userNFTs[currentIndex] || null;
+  const [userNFT, setUserNFT] = useState<NFT | null>(null);
 
   const handleStake = async () => {
-    if (!selectedNFT) return;
+    if (!userNFT) return;
     setLoading(true);
     try {
-      const payload = { nftId: selectedNFT.mint, lockPeriod: 1 };
+      const payload = { nftId: userNFT.mint, lockPeriod: 1 };
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL1}/api/freeze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -47,10 +41,10 @@ export default function StakingInterface({ nft }: StakingInterfaceProps) {
   };
 
   const handleUnstake = async () => {
-    if (!selectedNFT) return;
+    if (!userNFT) return;
     setLoading(true);
     try {
-      const payload = { nftId: selectedNFT.mint };
+      const payload = { nftId: userNFT.mint };
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL1}/api/unfreeze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -85,98 +79,83 @@ export default function StakingInterface({ nft }: StakingInterfaceProps) {
     }
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % userNFTs.length);
-  };
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + userNFTs.length) % userNFTs.length);
-  };
-
   useEffect(() => {
+    let isMounted = true;
     const fetchNFTs = async () => {
-      if (!publicKey) return;
+      if (!publicKey) {
+        if (isMounted) setUserNFT(null); // ✅ Limpiar NFT si no hay wallet
+        return;
+      }
       setLoading(true);
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nfts/${publicKey.toBase58()}`);
         const result = await res.json();
-        if (res.ok && result.success && Array.isArray(result.data)) {
-          const mappedNFTs: RawNFT [] = result.data.map((nft: RawNFT) => ({
-            mint: nft.mint || nft.id || "",
-            name: nft.name || "Unnamed NFT",
-            image: nft.image || "",
-          }));
-          setUserNFTs(mappedNFTs);
-          setCurrentIndex(0);
+        if (res.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
+          const nftData = result.data[0];
+          if (isMounted) {
+            setUserNFT({
+              mint: nftData.mint || nftData.id || "",
+              name: nftData.name || "Unnamed NFT",
+              image: nftData.image || "",
+            });
+          }
         } else {
-          setUserNFTs([]);
+          if (isMounted) setUserNFT(null);
         }
       } catch (err) {
         console.error("Error buscando NFTs desde backend:", err);
-        setUserNFTs([]);
+        if (isMounted) setUserNFT(null);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchNFTs();
-  }, [publicKey]);
+    return () => {
+      isMounted = false; // ✅ Evita actualizar el estado si el componente se desmonta
+    };
+  }, [publicKey, nft]);
 
   return (
     <div className="staking-page">
       <div className="staking">
         <h3 className="staking__title">
-          {!publicKey
+          {!connected
             ? "Conecta tu wallet para ver tus NFTs."
             : loading
             ? "Buscando NFTs..."
-            : !selectedNFT
+            : !userNFT
             ? "NFTs no encontrados."
-            : `Staking NFT: ${selectedNFT.name}`}
+            : `Staking NFT: ${userNFT.name}`}
         </h3>
 
-        <div className="staking__nft-carousel">
-          {userNFTs.length > 1 && (
-            <button onClick={handlePrev} className="staking__arrow-btn">◀</button>
-          )}
+        {connected && userNFT?.image && (
+          <Image
+            src={userNFT.image}
+            alt={userNFT.name}
+            className="staking__image"
+            width={300}
+            height={300}
+            unoptimized
+          />
+        )}
 
-          {selectedNFT?.image && (
-            <Image
-              src={selectedNFT.image}
-              alt={selectedNFT.name}
-              className="staking__image"
-              width={300}
-              height={300}
-              unoptimized
-            />
-          )}
+        {connected && userNFT && (
+          <div className="staking__buttons">
+            <button className="staking__confirm-btn" onClick={handleStake}>STAKE</button>
+            <button className="staking__confirm-btn" onClick={handleUnstake}>UNSTAKE</button>
+          </div>
+        )}
 
-          {userNFTs.length > 1 && (
-            <button onClick={handleNext} className="staking__arrow-btn">▶</button>
-          )}
-        </div>
-
-        <div className="staking__buttons">
-          {selectedNFT && (
-            <>
-              <button className="staking__confirm-btn" onClick={handleStake}>
-                STAKE
-              </button>
-              <button className="staking__confirm-btn" onClick={handleUnstake}>
-                UNSTAKE
-              </button>
-            </>
-          )}
-          {publicKey && !loading && (
-            <button
-              className="staking__confirm-btn staking__confirm-btn--top"
-              onClick={handleInitialize}
-              disabled={initializing}
-            >
-              {initializing ? "Inicializando..." : "Inicializar Contrato"}
-            </button>
-          )}
-        </div>
+        {connected && !loading && (
+          <button
+            className="staking__confirm-btn staking__confirm-btn--top"
+            onClick={handleInitialize}
+            disabled={initializing}
+          >
+            {initializing ? "Inicializando..." : "Inicializar Contrato"}
+          </button>
+        )}
       </div>
     </div>
   );

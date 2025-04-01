@@ -17,20 +17,22 @@ interface RawNFT {
 }
 
 export default function NFTGallery() {
-  const wallet = useWallet();
+  const { publicKey, connected } = useWallet(); // ✅ Añadido `connected` para verificar conexión
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchNFTsFromBackend = async () => {
-      if (!wallet.publicKey) return;
+      if (!connected || !publicKey) {
+        setNfts([]); // ✅ Limpiar NFTs si se desconecta la wallet
+        return;
+      }
 
       setLoading(true);
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nfts/${wallet.publicKey.toBase58()}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nfts/${publicKey.toBase58()}`
         );
-
         const data = await res.json();
         console.log("Respuesta backend NFTs:", data);
 
@@ -51,40 +53,47 @@ export default function NFTGallery() {
       }
     };
 
-    if (wallet.publicKey) {
-      fetchNFTsFromBackend();
-    }
-  }, [wallet.publicKey]); // ✅ Corrección de dependencia exacta
+    fetchNFTsFromBackend(); // ✅ Ejecutar solo si cambia la wallet o estado de conexión
+  }, [publicKey, connected]);
 
-  if (!wallet.connected) {
-    return <p className="nft-gallery__title">Conecta tu wallet para ver tus NFTs.</p>;
+  // ✅ Mostrar solo mensaje si la wallet no está conectada
+  if (!connected) {
+    return (
+      <div className="nft-gallery">
+        <h2 className="nft-gallery__title">Conecta tu wallet para ver tus NFTs.</h2>
+      </div>
+    );
   }
 
   return (
-    <div className="nft-gallery"> {/* ✅ Envuelve todo en la clase .nft-gallery para aplicar fondo y padding */}
+    <div className="nft-gallery"> {/* ✅ Envuelve todo en .nft-gallery para aplicar fondo y padding */}
       <h2 className="nft-gallery__title">Tus NFTs</h2>
-  
-      <div className="nft-gallery__grid"> {/* ✅ Grid layout definido en el CSS para mostrar múltiples NFTs */}
+
+      <div className="nft-gallery__grid"> {/* ✅ Galería con layout en grid */}
         {loading ? (
           <p>Cargando NFTs...</p>
         ) : nfts.length === 0 ? (
-          // ✅ Si no hay NFTs, muestra uno falso para probar staking
-          <StakingInterface nft={{ mint: "", name: "Fake NFT", image: "" }} onStake={() => {}} />
+          // ✅ Wallet conectada pero sin NFTs: mostramos un NFT falso
+          <StakingInterface
+            nft={{ mint: "", name: "Fake NFT", image: "" }}
+            onStake={() => {}}
+          />
         ) : (
+          // ✅ Wallet conectada y hay NFTs: los listamos todos
           nfts.map((nft) => (
-            <div className="nft-gallery__card" key={nft.mint}> {/* 🔧 CAMBIO: antes era "nft-card" */}
+            <div className="nft-gallery__card" key={nft.mint}>
               {nft.image ? (
                 <Image
                   src={nft.image}
                   alt={nft.name}
-                  className="nft-gallery__image" // 🔧 CAMBIO: antes era "nft-image"
+                  className="nft-gallery__image"
                   width={300}
                   height={300}
                 />
               ) : (
                 <div className="nft-image-placeholder">Imagen no disponible</div>
               )}
-              <h3 className="nft-gallery__name">{nft.name}</h3> {/* 🔧 CAMBIO: antes era "nft-name" */}
+              <h3 className="nft-gallery__name">{nft.name}</h3>
               <StakingInterface nft={nft} onStake={() => {}} />
             </div>
           ))
@@ -92,4 +101,4 @@ export default function NFTGallery() {
       </div>
     </div>
   );
-  }
+}
